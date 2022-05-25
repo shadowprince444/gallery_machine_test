@@ -19,7 +19,7 @@ class GalleryScreen extends StatelessWidget {
     final imageController = Get.find<ImageGalleryController>();
     return Scaffold(
       appBar: AppBar(
-        title: Text("Photos"),
+        title: const Text("Photos"),
       ),
       body: ResponsiveSafeArea(
         builder: (context, size) {
@@ -30,63 +30,77 @@ class GalleryScreen extends StatelessWidget {
                 future: imageController.getImages(),
                 builder: (context, snapshot) {
                   if (snapshot.connectionState == ConnectionState.done) {
-                    return Obx(() {
-                      return ListView.separated(
-                          itemCount: imageController.albumCount.value,
-                          separatorBuilder: (context, index) => const VSpace(20),
-                          itemBuilder: (context, mainIndex) {
-                            List<ImageResponseModel> imageList = imageController.getGroupedImageResponseListByIndex(mainIndex);
-                            return Padding(
-                              padding: EdgeInsets.symmetric(
-                                horizontal: 8.hdp(),
-                                vertical: 10.vdp(),
-                              ),
-                              child: Container(
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(
-                                    10.vdp(),
-                                  ),
-                                  color: Colors.blueAccent.withOpacity(
-                                    .25,
-                                  ),
-                                ),
+                    if (imageController.albumCount.value > 0) {
+                      return Obx(() {
+                        return ListView.separated(
+                            itemCount: imageController.albumCount.value,
+                            separatorBuilder: (context, index) => const VSpace(20),
+                            itemBuilder: (context, mainIndex) {
+                              List<ImageResponseModel> imageList = imageController.getGroupedImageResponseListByIndex(mainIndex);
+                              return Padding(
                                 padding: EdgeInsets.symmetric(
                                   horizontal: 8.hdp(),
+                                  vertical: 10.vdp(),
                                 ),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    VSpace(10),
-                                    Text(
-                                      "Album id: ${imageList.first.albumId}",
-                                      style: AppTextThemes().headline1,
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(
+                                      10.vdp(),
                                     ),
-                                    VSpace(10),
-                                    ResponsiveSafeArea(builder: (context, innerSize) {
-                                      return GridView.builder(
-                                        physics: const NeverScrollableScrollPhysics(),
-                                        shrinkWrap: true,
-                                        itemCount: imageList.length,
-                                        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                                          crossAxisCount: 4,
-                                        ),
-                                        itemBuilder: (context, index) {
-                                          final imageModel = imageList[index];
-                                          return ImageTile(
-                                            imageUrl: imageModel.url,
-                                            previewUrl: imageModel.thumbnailUrl,
-                                            imageHeight: innerSize.width / 4,
-                                            imageWidth: innerSize.width / 4,
-                                          );
-                                        },
-                                      );
-                                    }),
-                                  ],
+                                    color: Colors.white,
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color: Colors.grey.withOpacity(.5),
+                                        spreadRadius: .25.vdp(),
+                                        blurRadius: .25.vdp(),
+                                      )
+                                    ],
+                                  ),
+                                  padding: EdgeInsets.symmetric(
+                                    horizontal: 8.hdp(),
+                                  ),
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      const VSpace(10),
+                                      Text(
+                                        "Album id: ${imageList.first.albumId}",
+                                        style: AppTextThemes().headline3,
+                                      ),
+                                      const VSpace(10),
+                                      ResponsiveSafeArea(builder: (context, innerSize) {
+                                        return GridView.builder(
+                                          physics: const NeverScrollableScrollPhysics(),
+                                          shrinkWrap: true,
+                                          itemCount: imageList.length,
+                                          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                                            crossAxisCount: 4,
+                                          ),
+                                          itemBuilder: (context, index) {
+                                            final imageModel = imageList[index];
+                                            return ImageTile(
+                                              imageUrl: imageModel.url,
+                                              previewUrl: imageModel.thumbnailUrl,
+                                              imageHeight: innerSize.width / 4,
+                                              imageWidth: innerSize.width / 4,
+                                            );
+                                          },
+                                        );
+                                      }),
+                                    ],
+                                  ),
                                 ),
-                              ),
-                            );
-                          });
-                    });
+                              );
+                            });
+                      });
+                    } else {
+                      return Center(
+                        child: Text(
+                          "No Images Found",
+                          style: AppTextThemes().headline3,
+                        ),
+                      );
+                    }
                   } else {
                     return const Center(
                       child: CircularProgressIndicator(),

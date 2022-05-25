@@ -21,7 +21,7 @@ class AppTextThemes {
   late Color primaryTextColor;
 
   AppTextThemes({primaryTextColor = Colors.black}) {
-    _textStyle = GoogleFonts.cormorant().copyWith(
+    _textStyle = GoogleFonts.poppins().copyWith(
       color: primaryTextColor,
       decoration: TextDecoration.none,
     );
